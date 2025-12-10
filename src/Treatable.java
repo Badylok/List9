@@ -1,0 +1,3 @@
+interface Treatable {
+    void receiveTreatment();
+}
