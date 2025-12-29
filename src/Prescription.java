@@ -30,6 +30,6 @@ class Prescription {
 
     @Override
     public String toString() {
-        return "Rx [Dr. " + doctor.name + "]: " + treatments;
+        return "Dr. " + doctor.name + ": " + treatments;
     }
 }

@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,12 +8,14 @@ class ClinicTest {
     static void main(String[] args) {
         System.out.println("Clinic System Initializing \n");
 
-        // Instantiating the objects for our simulation
+        ClinicManager system = new ClinicManager();
+
         Doctor doctor = new Doctor("Grzegorz Wiśnia", 50, "Diagnostic Medicine");
         Nurse nurse = new Nurse("Jakub Krupa", 35);
         Receptionist receptionist = new Receptionist("Anna Bąk", 28);
         Patient patient1 = new Patient("Jan Kowalski", 40, "Flu");
         Patient patient2 = new Patient("Artur Nowak", 25, "Broken Arm");
+
 
         // I group all people into a single list
         List<Person> people = new ArrayList<>();
@@ -45,11 +49,55 @@ class ClinicTest {
 
         // 4. Demonstrates unique methods specific to subclasses
         System.out.println("\n Specific Actions");
-        // Doctor specific action
+        // Doctor specific action (Legacy)
         doctor.prescribeMedicine("Tamiflu");
 
         // Nurse specific action
         nurse.checkVitals(patient1);
         nurse.checkVitals(patient2);
+
+        //new List10 functionality
+
+        System.out.println("\nScheduling Appointments");
+
+        // Receptionist books Jan Kowalski
+        LocalDateTime time1 = LocalDateTime.of(2023, Month.OCTOBER, 10, 9, 0);
+        receptionist.createAppointment(patient1, doctor, time1, system);
+
+        // Nurse books Artur Nowak
+        LocalDateTime time2 = LocalDateTime.of(2023, Month.OCTOBER, 10, 10, 0);
+        nurse.createAppointment(patient2, doctor, time2, system);
+
+        System.out.println("Testing Overlap Restriction:");
+        // Trying to book Jan Kowalski into an already taken slot
+        receptionist.createAppointment(patient1, doctor, time2, system);
+
+        System.out.println("\nWriting Prescriptions");
+
+        // Prescribing for Jan Kowalski
+        List<Treatment> treatList1 = new ArrayList<>();
+        treatList1.add(new Medicine("Tamiflu"));
+        treatList1.add(new Treatment("Bed Rest"));
+        doctor.createPrescription(patient1, treatList1, system);
+
+        // Prescribing for Artur Nowak
+        List<Treatment> treatList2 = new ArrayList<>();
+        treatList2.add(new Medicine("Ibuprofen"));
+        treatList2.add(new Medicine("Tamiflu"));
+        doctor.createPrescription(patient2, treatList2, system);
+
+        System.out.println("\nSystem Queries");
+
+        system.printDoctorSchedule(doctor);
+        System.out.println();
+
+        system.printPatientAppointments(patient1);
+        System.out.println();
+
+        system.printPatientPrescriptions(patient1);
+        System.out.println();
+
+        // Check who is taking Tamiflu
+        system.printPatientsByMedicine("Tamiflu");
     }
 }
